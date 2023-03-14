@@ -1,0 +1,43 @@
+{
+  "name": "dmiknys/laravel-model-sieve",
+  "description": "",
+  "keywords": ["Laravel"],
+  "authors": [
+    {
+      "name": "Dovydas Miknys",
+      "email": "dovis.miknis@gmail.com"
+    }
+  ],
+  "homepage": "https://github.com/dmiknys/laravel-model-sieve",
+  "require": {
+    "php": "^8.1",
+    "laravel/framework": "^10.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^8.0",
+    "phpstan/phpstan": "^1.10",
+    "phpunit/phpunit": "^9.6"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Dmiknys\\LaravelModelSieve\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Dmiknys\\LaravelModelSieve\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Dmiknys\\LaravelModelSieve\\Providers\\SieveServiceProvider"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit -c ./phpunit.xml --colors=always",
+    "analysis": "vendor/bin/phpstan analyse"
+  }
+}
