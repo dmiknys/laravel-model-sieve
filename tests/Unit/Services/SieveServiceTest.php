@@ -67,23 +67,4 @@ class SieveServiceTest extends TestCase
 
         $service->applyQueryManipulationsFromRequest($request, $builder);
     }
-
-    /** @test */
-    public function shouldApplyFilterToBuilderFromFilterDataObject(): void
-    {
-        $builder = $this->partialMock(Builder::class);
-        $filterObject = new FilterDataObject('in', 'test', ['test', 'test2']);
-
-        $this->partialMock(FilterManager::class)
-            ->shouldReceive('applyFilter')
-            ->with($builder, $filterObject)
-            ->once()
-        ;
-
-        /** @var SieveService $service */
-        $service = $this->app->make(SieveService::class);
-
-
-        $service->applyFilter($builder, $filterObject);
-    }
 }

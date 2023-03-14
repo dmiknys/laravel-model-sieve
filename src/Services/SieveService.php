@@ -24,7 +24,7 @@ class SieveService
 
         /** @var FilterDataObject $filter */
         foreach ($filters as $filter) {
-            $builder = $this->applyFilter($builder, $filter);
+            $builder = $this->filterManager->applyFilter($builder, $filter);
         }
 
 //        $builder = $this->applyOrder($builder, $order); // TODO: implement later
@@ -42,18 +42,10 @@ class SieveService
 
         /** @var FilterDataObject $filter */
         foreach ($filters as $filter) {
-            $this->applyFilter($builder, $filter);
+            $this->filterManager->applyFilter($builder, $filter);
         }
 
         return $builder;
-    }
-
-    /**
-     * @throws FilterContextException
-     */
-    public function applyFilter(Builder $builder, FilterDataObject $filter): Builder
-    {
-        return $this->filterManager->applyFilter($builder, $filter);
     }
 
     private function parseManipulations(array $params): array
