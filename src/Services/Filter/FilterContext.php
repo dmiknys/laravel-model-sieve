@@ -7,8 +7,10 @@ use Illuminate\Support\Str;
 
 class FilterContext
 {
+    /** @var iterable<Filter> $filters */
     private iterable $filters;
 
+    /** @param iterable<Filter> $filters */
     public function __construct(iterable $filters)
     {
         $this->filters = $filters;

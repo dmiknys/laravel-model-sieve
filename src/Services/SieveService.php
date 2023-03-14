@@ -2,13 +2,13 @@
 
 namespace Dmiknys\LaravelModelSieve\Services;
 
+use Dmiknys\LaravelModelSieve\Services\Filter\DataObjects\FilterDataObject;
 use Dmiknys\LaravelModelSieve\Services\Filter\FilterContextException;
 use Dmiknys\LaravelModelSieve\Services\Filter\FilterManager;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 
-final class SieveService
+class SieveService
 {
     public function __construct(
         private readonly FilterManager $filterManager
@@ -16,13 +16,17 @@ final class SieveService
     }
 
     /**
-     * @throws Exception
+     * @throws FilterContextException
      */
     public function applyQueryManipulationsFromRequest(Request $request, Builder $builder): Builder
     {
         [$filters, $order, $search] = $this->parseManipulations($request->all());
 
-        $builder = $this->applyFilters($builder, $filters);
+        /** @var FilterDataObject $filter */
+        foreach ($filters as $filter) {
+            $builder = $this->applyFilter($builder, $filter);
+        }
+
 //        $builder = $this->applyOrder($builder, $order); // TODO: implement later
 //        $builder = $this->applySearch($builder, $order); // TODO: implement later
 
@@ -32,9 +36,24 @@ final class SieveService
     /**
      * @throws FilterContextException
      */
-    public function applyFilters(Builder $builder, array $filters = []): Builder
+    public function applyFiltersFromRequest(Request $request, Builder $builder): Builder
     {
-        return $this->filterManager->applyFilters($builder, $filters);
+        [$filters] = $this->parseManipulations($request->all());
+
+        /** @var FilterDataObject $filter */
+        foreach ($filters as $filter) {
+            $this->applyFilter($builder, $filter);
+        }
+
+        return $builder;
+    }
+
+    /**
+     * @throws FilterContextException
+     */
+    public function applyFilter(Builder $builder, FilterDataObject $filter): Builder
+    {
+        return $this->filterManager->applyFilter($builder, $filter);
     }
 
     private function parseManipulations(array $params): array
@@ -46,7 +65,9 @@ final class SieveService
         foreach ($params as $key => $value) {
             switch (true) {
                 case str_starts_with($key, config('query_filter_prefix', 'filter')):
-                    $filters[] = [...explode('_', $key), $value];
+                    [,$operator, $column] = explode('_', $key);
+
+                    $filters[] = new FilterDataObject($operator, $column, $value);
                     break;
                 case str_starts_with($key, config('query_order_prefix', 'order')):
                     $order = [...explode('_', $key), $value];
