@@ -29,10 +29,6 @@ class SieveServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../../config/config.php', 'sieve'
-        );
-
         $this->app->tag(
             [
                 ...config('sieve.custom_filters', []),

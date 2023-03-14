@@ -10,6 +10,10 @@ Information about the installation procedure for this package.
 
 Information about using this package
 
+```
+php artisan vendor:publish --provider="Dmiknys\LaravelModelSieve\Providers\SieveServiceProvider" --tag="config"
+```
+
 ## Contributing
 
 Information about contributing to this package.
