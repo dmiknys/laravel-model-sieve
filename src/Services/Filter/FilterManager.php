@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class FilterManager
 {
-    private function __construct(
+    public function __construct(
         private readonly FilterContext $filterContext
     ) {
     }

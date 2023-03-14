@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 final class SieveService
 {
-    private function __construct(
+    public function __construct(
         private readonly FilterManager $filterManager
     ) {
     }
