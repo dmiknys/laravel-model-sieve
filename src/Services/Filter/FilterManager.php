@@ -5,6 +5,7 @@ namespace Dmiknys\LaravelModelSieve\Services\Filter;
 use Dmiknys\LaravelModelSieve\Interfaces\HasFilters;
 use Dmiknys\LaravelModelSieve\Services\Filter\DataObjects\FilterDataObject;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Schema;
 
 class FilterManager
 {
@@ -21,10 +22,13 @@ class FilterManager
     {
         $model = $builder->getModel();
 
-        if (
-            !$model instanceof HasFilters
-            || !in_array($filterDataObject->getColumn(), $model->getFilterableColumns(), true)
-        ) {
+        if (!$model instanceof HasFilters) {
+            return $builder;
+        }
+
+        $allowedColumns = $this->getAllowedColumns($model, $builder);
+
+        if (!in_array($filterDataObject->getColumn(), $allowedColumns, true)) {
             return $builder;
         }
 
@@ -33,5 +37,12 @@ class FilterManager
             ->filter($builder->getQuery(), $filterDataObject->getColumn(), $filterDataObject->getValue());
 
         return $builder->setQuery($filteredQuery);
+    }
+
+    private function getAllowedColumns(HasFilters $model, Builder $builder): array
+    {
+        return $model->getFilterableColumns() === ['*']
+            ? Schema::getColumnListing($builder->getModel()->getTable())
+            : $model->getFilterableColumns();
     }
 }
